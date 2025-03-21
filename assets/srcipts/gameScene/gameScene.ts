@@ -1,7 +1,8 @@
 import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
 const { ccclass, property } = _decorator;
 
-import { mockUserData } from '../../mock/test';
+import { mockData, mockUserData } from '../../mock/test';
+import { SelfCardsPrefab } from './prefabs/selfCards';
 
 @ccclass('gameScene')
 export class gameScene extends Component {
@@ -10,6 +11,9 @@ export class gameScene extends Component {
 
     @property({type: Prefab})
     playerPrefab: Prefab | null = null
+
+    @property({ type: Prefab })
+    SelfCardsPrefab: Prefab | null = null;
 
     playerList = []
 
@@ -23,6 +27,7 @@ export class gameScene extends Component {
         for(const player of this.playerList){
         }
 
+        this.generateSelfCards(mockData);
     }
 
 
@@ -33,6 +38,13 @@ export class gameScene extends Component {
         this.playerList.push(player);
         const playerComp = player.getComponent('player') as any;
         playerComp.init(playerData)
+    }
+
+    generateSelfCards(cards: any[])
+    {
+        const selfCards = instantiate(this.SelfCardsPrefab);
+        selfCards.setParent(this.playerSeatNode);
+        SelfCardsPrefab.getComponent(selfCards).sendCards(cards);
     }
 
 }
